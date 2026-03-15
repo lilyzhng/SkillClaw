@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SkillClaw — Compositional Grammar Engine for Robotics</title>
+<title>SkillClaw — Collectively Self-Improving Robot Agents</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -102,7 +102,7 @@ body { background: var(--bg); font-family: var(--font-sans); color: var(--text);
   margin-top: 4px;
 }
 
-/* Hero card: composition demo */
+/* Hero card */
 .hero-card {
   background: #181818; border-radius: 10px; padding: 24px 28px;
   border: 1px solid #2a2a2a;
@@ -130,6 +130,8 @@ body { background: var(--bg); font-family: var(--font-sans); color: var(--text);
 .tree-ref { color: var(--text-dim); }
 .tree-dim { color: #555; font-size: 10px; }
 .tree-check { color: var(--green); font-size: 11px; }
+.tree-fail { color: var(--red); font-size: 11px; }
+.tree-think { color: var(--amber); font-size: 11px; }
 
 .hero-pipeline {
   display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap;
@@ -194,29 +196,64 @@ tr.highlight td { color: var(--green); }
 .vs-box.right .vs-list li::before { background: var(--green); }
 
 /* ══════════════════════════════════════════════ */
-/* DOMAIN GRID                                   */
+/* AGENT CARDS                                   */
 /* ══════════════════════════════════════════════ */
-.domain-grid {
+.agent-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
 }
-.domain-col {
-  background: var(--panel); border-radius: 8px; padding: 16px;
+.agent-card {
+  background: var(--panel); border-radius: 8px; padding: 18px;
   border-top: 3px solid var(--text-dim);
 }
-.domain-col.d1 { border-top-color: var(--green); }
-.domain-col.d2 { border-top-color: var(--cyan); }
-.domain-col.d3 { border-top-color: var(--amber); }
-.domain-col.d4 { border-top-color: var(--purple); }
-.domain-title {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
-  letter-spacing: 1px; margin-bottom: 10px;
+.agent-card.solver { border-top-color: var(--green); }
+.agent-card.pr { border-top-color: var(--cyan); }
+.agent-card.oversight { border-top-color: var(--purple); }
+.agent-card.orchestrator { border-top-color: var(--amber); }
+.agent-name {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; margin-bottom: 4px;
 }
-.domain-col.d1 .domain-title { color: var(--green); }
-.domain-col.d2 .domain-title { color: var(--cyan); }
-.domain-col.d3 .domain-title { color: var(--amber); }
-.domain-col.d4 .domain-title { color: var(--purple); }
-.domain-col p {
+.agent-card.solver .agent-name { color: var(--green); }
+.agent-card.pr .agent-name { color: var(--cyan); }
+.agent-card.oversight .agent-name { color: var(--purple); }
+.agent-card.orchestrator .agent-name { color: var(--amber); }
+.agent-model {
+  font-family: var(--font-mono); font-size: 10px; color: #555;
+  margin-bottom: 10px;
+}
+.agent-card p {
   font-family: var(--font-sans); font-size: 12px; color: var(--text-dim); line-height: 1.5;
+}
+.agent-tools {
+  margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;
+}
+.agent-tool {
+  font-family: var(--font-mono); font-size: 10px;
+  padding: 2px 8px; border-radius: 3px;
+  background: #181818; color: var(--text-dim);
+  border: 1px solid #333;
+}
+
+/* ══════════════════════════════════════════════ */
+/* SKILL GRID                                    */
+/* ══════════════════════════════════════════════ */
+.skill-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.skill-card {
+  background: #181818; border-radius: 6px; padding: 14px 16px;
+  border: 1px solid #2a2a2a;
+}
+.skill-name {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  color: var(--green); margin-bottom: 4px;
+}
+.skill-task {
+  font-family: var(--font-mono); font-size: 10px; color: #555;
+  margin-bottom: 6px;
+}
+.skill-desc {
+  font-family: var(--font-sans); font-size: 11px; color: var(--text-dim); line-height: 1.4;
 }
 
 /* ══════════════════════════════════════════════ */
@@ -232,12 +269,31 @@ tr.highlight td { color: var(--green); }
 .code-block .fn { color: var(--cyan); }
 .code-block .str { color: var(--green); }
 .code-block .cmt { color: #555; }
+.code-block .kw { color: var(--purple); }
+
+/* ══════════════════════════════════════════════ */
+/* FLOW DIAGRAM                                  */
+/* ══════════════════════════════════════════════ */
+.flow-row {
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 16px 0;
+}
+.flow-box {
+  padding: 8px 16px; border-radius: 4px;
+  border: 1px solid #333; color: var(--text-dim);
+}
+.flow-box.active { border-color: var(--green); color: var(--green); }
+.flow-box.cyan { border-color: var(--cyan); color: var(--cyan); }
+.flow-box.purple { border-color: var(--purple); color: var(--purple); }
+.flow-arrow { padding: 0 10px; color: #444; }
+.flow-queue { padding: 0 10px; color: var(--amber); font-size: 10px; }
 
 /* ══════════════════════════════════════════════ */
 /* SPONSOR GRID                                  */
 /* ══════════════════════════════════════════════ */
 .sponsor-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
 }
 .sponsor-card {
   background: var(--panel); border-radius: 8px; padding: 20px;
@@ -255,28 +311,6 @@ tr.highlight td { color: var(--green); }
 }
 .sponsor-card.primary { border-color: var(--green); }
 .sponsor-card.primary .sponsor-name { color: var(--green); }
-
-/* ══════════════════════════════════════════════ */
-/* CHECKLIST                                     */
-/* ══════════════════════════════════════════════ */
-.check-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-}
-.check-col {
-  background: var(--panel); border-radius: 8px; padding: 20px 24px;
-}
-.check-col-title {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px;
-}
-.check-list {
-  list-style: none; font-family: var(--font-sans); font-size: 13px;
-  color: var(--text-dim); line-height: 2;
-}
-.check-list li::before {
-  content: '[ ]'; font-family: var(--font-mono); font-size: 11px;
-  color: var(--green); margin-right: 10px; opacity: 0.6;
-}
 
 /* ── Footer ── */
 .footer {
@@ -300,12 +334,13 @@ tr.highlight td { color: var(--green); }
   .hero-subtitle { font-size: 28px; }
   .vs-layout { grid-template-columns: 1fr; }
   .vs-arrow { display: none; }
-  .domain-grid { grid-template-columns: 1fr 1fr; }
+  .agent-grid { grid-template-columns: 1fr 1fr; }
+  .skill-grid { grid-template-columns: 1fr 1fr; }
   .sponsor-grid { grid-template-columns: 1fr 1fr; }
-  .check-grid { grid-template-columns: 1fr; }
   .teaser { padding: 40px 20px 36px; }
   .panel { padding: 24px 20px; }
   .inline-grid-2 { grid-template-columns: 1fr !important; }
+  .flow-row { flex-wrap: wrap; gap: 8px; }
 }
 @media (max-width: 480px) {
   .container { padding: 0 12px; }
@@ -324,7 +359,8 @@ tr.highlight td { color: var(--green); }
   .hero-pipeline { font-size: 10px; gap: 0; }
   .hero-pipe-step { padding: 4px 6px; font-size: 10px; }
   .hero-pipe-arrow { padding: 0 3px; }
-  .domain-grid { grid-template-columns: 1fr; }
+  .agent-grid { grid-template-columns: 1fr; }
+  .skill-grid { grid-template-columns: 1fr 1fr; }
   .sponsor-grid { grid-template-columns: 1fr; }
   .code-block { padding: 14px 12px; font-size: 11px; overflow-x: auto; white-space: pre; }
   .section-header { font-size: 11px; letter-spacing: 2px; }
@@ -334,6 +370,8 @@ tr.highlight td { color: var(--green); }
   .vs-list { font-size: 12px; }
   .panel-title { font-size: 13px; }
   .inline-grid-2 { grid-template-columns: 1fr !important; }
+  .flow-row { font-size: 10px; }
+  .flow-box { padding: 6px 10px; }
 }
 </style>
 </head>
@@ -351,60 +389,68 @@ tr.highlight td { color: var(--green); }
           <h1 class="hero-title">SkillClaw</h1>
           <span class="claw-kaomoji" id="clawFace"></span>
         </div>
-        <div class="hero-subtitle">Compositional Skill Agent</div>
+        <div class="hero-subtitle">Self-Improving Robot Agents</div>
         <p class="hero-desc">
-          Teaching robots to compose new skills from primitives.
-          Not skill search (static) &mdash; skill <em>generation</em> (learned).
+          An AI agent that teaches itself robot skills by writing code, running it in simulation, reading the errors, and trying again.
+          Every solved task becomes a reusable skill. The 7th task is easier than the 1st.
         </p>
         <div class="hero-stats">
-          <div><div class="hero-stat-num">10x</div><div class="hero-stat-label">Faster Dev</div></div>
-          <div><div class="hero-stat-num">527</div><div class="hero-stat-label">Skills (OXE)</div></div>
-          <div><div class="hero-stat-num">1000x</div><div class="hero-stat-label">Faster Sim</div></div>
+          <div><div class="hero-stat-num">8</div><div class="hero-stat-label">Skills Learned</div></div>
+          <div><div class="hero-stat-num">14</div><div class="hero-stat-label">Benchmark Tasks</div></div>
+          <div><div class="hero-stat-num">2</div><div class="hero-stat-label">Tools Total</div></div>
         </div>
       </div>
 
       <div class="hero-card">
-        <div class="hero-prompt">&rsaquo; compose a skill that clears the table<span class="term-cursor"></span></div>
+        <div class="hero-prompt">&rsaquo; python -m rlvr.agents --tasks PullCube-v1:42<span class="term-cursor"></span></div>
         <div class="hero-tree">
           <div class="tree-row">
             <span class="tree-branch">&boxvr;&boxh;</span>
-            <span class="tree-name">clear-table</span>
-            <span class="tree-dim">(composition)</span>
-          </div>
-          <div class="tree-row tree-indent">
-            <span class="tree-branch">&boxvr;&boxh;</span>
-            <span class="tree-name">scan-surface</span>
-            <span class="tree-arrow">&rarr;</span>
-            <span class="tree-ref">tb-scan/main.py</span>
+            <span class="tree-name">bash</span>
+            <span class="tree-dim">cat brains/shared_brain/README.md</span>
             <span class="tree-check">&check;</span>
           </div>
-          <div class="tree-row tree-indent">
+          <div class="tree-row">
             <span class="tree-branch">&boxvr;&boxh;</span>
-            <span class="tree-name">pick-up</span>
-            <span class="tree-arrow">&rarr;</span>
-            <span class="tree-ref">tb-pick-up/main.py</span>
+            <span class="tree-name">bash</span>
+            <span class="tree-dim">cat skills/sc-pick/scripts/main.py</span>
             <span class="tree-check">&check;</span>
           </div>
-          <div class="tree-row tree-indent">
+          <div class="tree-row">
             <span class="tree-branch">&boxvr;&boxh;</span>
-            <span class="tree-name">place-in-bin</span>
-            <span class="tree-arrow">&rarr;</span>
-            <span class="tree-ref">tb-place/main.py</span>
+            <span class="tree-name">sim_exec</span>
+            <span class="tree-dim">attempt 1 &mdash; approach wrong side</span>
+            <span class="tree-fail">&cross;</span>
+          </div>
+          <div class="tree-row">
+            <span class="tree-branch">&boxvr;&boxh;</span>
+            <span class="tree-name">scratch</span>
+            <span class="tree-dim">"gripper must approach from near side to pull"</span>
+            <span class="tree-think">&bull;</span>
+          </div>
+          <div class="tree-row">
+            <span class="tree-branch">&boxvr;&boxh;</span>
+            <span class="tree-name">sim_exec</span>
+            <span class="tree-dim">attempt 2 &mdash; task success!</span>
             <span class="tree-check">&check;</span>
           </div>
-          <div class="tree-row tree-indent">
+          <div class="tree-row">
             <span class="tree-branch">&boxur;&boxh;</span>
-            <span class="tree-name">loop-until-empty</span>
-            <span class="tree-dim">(new &mdash; composed)</span>
+            <span class="tree-name">save</span>
+            <span class="tree-dim">sc-pull &rarr; brains/shared_brain/skills/</span>
             <span class="tree-check">&check;</span>
           </div>
         </div>
         <div class="hero-pipeline">
-          <span class="hero-pipe-step">Discover Skills</span>
+          <span class="hero-pipe-step">Study</span>
           <span class="hero-pipe-arrow">&rarr;</span>
-          <span class="hero-pipe-step">Skill Composition</span>
+          <span class="hero-pipe-step">Write</span>
           <span class="hero-pipe-arrow">&rarr;</span>
-          <span class="hero-pipe-step">Skill Creation</span>
+          <span class="hero-pipe-step">Execute</span>
+          <span class="hero-pipe-arrow">&rarr;</span>
+          <span class="hero-pipe-step">Debug</span>
+          <span class="hero-pipe-arrow">&rarr;</span>
+          <span class="hero-pipe-step">Save</span>
         </div>
       </div>
     </div>
@@ -414,362 +460,399 @@ tr.highlight td { color: var(--green); }
 <!-- Punchline -->
 <div style="text-align:center; padding:48px 24px 32px; max-width:800px; margin:0 auto;">
   <h2 style="font-family:var(--font-sans); font-size:26px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:12px;">
-    Robots can execute skills. They can't compose new ones.
+    Robots don't need more training data. They need an agent that can debug itself.
   </h2>
   <p style="color:var(--text-dim); font-size:16px; line-height:1.6;">
-    Current systems chain existing skills by rules. SkillClaw trains robots to <em>learn</em>
-    compositional grammar &mdash; generating new skills from primitives via RL.
+    Like Claude Code, but for robotics. Two tools &mdash; <code style="color:var(--text); background:#e8e3db; padding:2px 6px; border-radius:3px; font-size:14px;">bash</code> and <code style="color:var(--text); background:#e8e3db; padding:2px 6px; border-radius:3px; font-size:14px;">sim_exec</code> &mdash; the agent figures out everything else.
   </p>
 </div>
 
 <div class="container">
 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 01: CORE THESIS + ENVIRONMENT DESIGN                      -->
+<!-- SECTION 01: THE PROBLEM                                            -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="section-header"><span>01</span> &mdash; Core Thesis</div>
+<div class="section-header"><span>01</span> &mdash; The Problem</div>
 
 <div class="panel fade-in">
-  <div class="panel-title">RL environments don't just train policies &mdash; they can train skill composition itself</div>
+  <div class="panel-title">Traditional robot learning starts from zero. Every time.</div>
 
   <div class="vs-layout">
     <div class="vs-box left">
       <div class="vs-box-title">Traditional</div>
       <ul class="vs-list">
-        <li>Give the robot a task</li>
-        <li>RL trains a single policy</li>
-        <li>Robot learns to do <strong style="color:var(--text-light)">this one thing</strong></li>
+        <li>Collect demonstrations</li>
+        <li>Train a policy</li>
+        <li>Deploy</li>
+        <li>Repeat for every new task</li>
       </ul>
     </div>
     <div class="vs-arrow">&rarr;</div>
     <div class="vs-box right">
       <div class="vs-box-title">SkillClaw</div>
       <ul class="vs-list">
-        <li>Give the robot primitives + environment + reward</li>
-        <li>RL trains <strong style="color:var(--text-light)">composition ability</strong></li>
-        <li>Robot learns to create new skills from primitives</li>
+        <li>Agent reads task + existing skills</li>
+        <li>Writes code, runs in simulation</li>
+        <li>Debugs via state diffs</li>
+        <li>Saves skill &mdash; next task is easier</li>
       </ul>
     </div>
   </div>
 
   <p style="color:var(--text-dim); font-size:13px; margin-top:24px; line-height:1.6; font-style:italic;">
-    "The environment is a trigger, not a teacher" &mdash; Skill search is static (limited to existing skills). SkillClaw is generative (creates new ones).
+    Knowledge compounds. Every task any agent solves makes every future agent better. The skill library is the flywheel.
   </p>
 </div>
 
-<!-- Environment Design Principles -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 02: HOW IT WORKS                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="section-header"><span>02</span> &mdash; How It Works</div>
+
+<!-- Agent Loop -->
 <div class="panel fade-in">
   <div class="window-dots">
     <div class="dot dot-red"></div>
     <div class="dot dot-yellow"></div>
     <div class="dot dot-green"></div>
   </div>
-  <div class="panel-title">Four Principles of Environment Design</div>
-
-  <div class="domain-grid">
-    <div class="domain-col d1">
-      <div class="domain-title">Provide Building Blocks</div>
-      <p>Tidybot skills, SDK docs, tools &mdash; but don't tell it how to assemble</p>
-    </div>
-    <div class="domain-col d2">
-      <div class="domain-title">Tell It Right or Wrong</div>
-      <p>Sim verification + per-step criteria feedback</p>
-    </div>
-    <div class="domain-col d3">
-      <div class="domain-title">Don't Tell It How</div>
-      <p>Agent discovers decomposition &rarr; recomposition on its own</p>
-    </div>
-    <div class="domain-col d4">
-      <div class="domain-title">Don't Tell It Where</div>
-      <p>Agent uses bash grep/find/cat to discover context</p>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 02: INSPIRATIONS                                           -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="section-header"><span>02</span> &mdash; Inspirations</div>
-
-<!-- Autoresearch comparison -->
-<div class="panel fade-in">
-  <div class="panel-title">Autoresearch &times; Skill Composition &mdash; Same Design Philosophy</div>
-  <p style="color:var(--text-dim); font-size:13px; margin-bottom:20px; line-height:1.6;">
-    Karpathy's autoresearch shares the exact same environment design philosophy &mdash; same structure, different learning mechanism.
-  </p>
-  <table>
-    <thead><tr><th></th><th>Autoresearch</th><th>SkillClaw</th></tr></thead>
-    <tbody>
-      <tr><td class="hl-cyan">Building Blocks</td><td>ML components in train.py (arch, optimizer, hyperparams)</td><td>Robot/agent primitive skills</td></tr>
-      <tr><td class="hl-cyan">Feedback</td><td>val_bpb (single metric, fixed 5-min window)</td><td>Reward signal (per-step criteria)</td></tr>
-      <tr><td class="hl-cyan">No Instructions</td><td>Agent decides what to change and how to combine</td><td>Agent discovers decompose &rarr; recompose</td></tr>
-      <tr><td class="hl-cyan">Learning</td><td style="color:var(--text-dim)">Hill climbing (greedy search)</td><td class="hl">Skill climbing (RL)</td></tr>
-    </tbody>
-  </table>
-  <p style="color:var(--green); font-family:var(--font-mono); font-size:11px; margin-top:16px;">
-    Hill climbing &rarr; Skill climbing: not climbing the loss landscape, but climbing the composition space
-  </p>
-</div>
-
-<!-- Tidybot + Domain-Agnostic -->
-<div class="panel fade-in">
-  <div class="window-dots">
-    <div class="dot dot-red"></div>
-    <div class="dot dot-yellow"></div>
-    <div class="dot dot-green"></div>
-  </div>
-  <div class="panel-title">Tidybot Universe &mdash; The Gap SkillClaw Fills</div>
-
-  <div class="vs-layout" style="margin-bottom:28px;">
-    <div class="vs-box left">
-      <div class="vs-box-title">Tidybot Has</div>
-      <ul class="vs-list">
-        <li>Agent skills + Robot skills in one system</li>
-        <li>tidybot-bundle chaining</li>
-        <li>Skill catalog + wishlist</li>
-        <li>Rewind safety net</li>
-      </ul>
-    </div>
-    <div class="vs-arrow">&rarr;</div>
-    <div class="vs-box right">
-      <div class="vs-box-title">SkillClaw Adds</div>
-      <ul class="vs-list">
-        <li>Rule-based &rarr; <strong style="color:var(--text-light)">learned</strong> composition</li>
-        <li>Agent learns compositional grammar on its own</li>
-        <li>Domain-agnostic: plug in any set of primitives</li>
-        <li>RL environment for composition training</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="panel-title" style="color:var(--amber); margin-top:8px;">One Grammar, Any Domain</div>
-  <table>
-    <thead><tr><th></th><th>AI Agent Skills</th><th>Robot Skills</th></tr></thead>
-    <tbody>
-      <tr><td class="hl-amber">Primitives</td><td>tool calls (search, read, write, execute)</td><td>motor commands (grasp, move, rotate)</td></tr>
-      <tr><td class="hl-amber">Composition</td><td>workflow (search &rarr; parse &rarr; generate)</td><td>trajectory (approach &rarr; grasp &rarr; lift)</td></tr>
-      <tr><td class="hl-amber">Feedback</td><td>task success / output quality</td><td>task success / sensor signal</td></tr>
-      <tr><td class="hl-amber">Environment</td><td>code sandbox, file system, APIs</td><td>physics sim, real world</td></tr>
-    </tbody>
-  </table>
-  <p style="color:var(--text-dim); font-size:13px; margin-top:16px; line-height:1.6;">
-    What's being trained isn't domain knowledge &mdash; it's <strong style="color:var(--text-light)">composition itself</strong>. Already validated across law/IB/consulting via APEX.
-  </p>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 03: TRAINING                                               -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="section-header"><span>03</span> &mdash; Training Plan</div>
-
-<!-- Skip SFT -->
-<div class="panel fade-in">
-  <div class="panel-title">Skip SFT, Go Straight to GRPO</div>
-  <p style="color:var(--text-dim); font-size:13px; margin-bottom:20px; line-height:1.6;">
-    Key takeaway from OpenEnv hackathon: <strong style="color:var(--text-light)">SFT degrades the base model.</strong>
-    Instruct models already know tool calling format &mdash; GRPO directly teaches them to compose tools more efficiently.
-  </p>
-  <table style="max-width:500px;">
-    <thead><tr><th>SFT Samples</th><th>Score</th><th>vs Baseline (6.6)</th></tr></thead>
-    <tbody>
-      <tr class="highlight"><td>0 (instruct baseline)</td><td><strong>6.6</strong></td><td>&mdash;</td></tr>
-      <tr><td>100</td><td>5.4</td><td class="hl-red">-1.2</td></tr>
-      <tr><td>500</td><td>4.2</td><td class="hl-red">-2.4 (more = worse)</td></tr>
-      <tr><td>~645 (full)</td><td>5.0</td><td class="hl-red">-1.6</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- Training Environment -->
-<div class="panel fade-in">
-  <div class="window-dots">
-    <div class="dot dot-red"></div>
-    <div class="dot dot-yellow"></div>
-    <div class="dot dot-green"></div>
-  </div>
-  <div class="panel-title">APEX Sandbox + Tidybot Skill Catalog</div>
-  <p style="color:var(--text-dim); font-size:13px; margin-bottom:20px; line-height:1.6;">
-    Architecture reuses the OpenEnv hackathon's ApexEnvironment (bash sandbox + step/reset lifecycle), just swap the building blocks:
-  </p>
+  <div class="panel-title">The Agent Loop &mdash; bash + sim_exec, that's it</div>
 
   <div class="code-block">
-    <span class="fn">reset()</span> <span class="cmt">&rarr; workspace with:</span><br>
-    &nbsp;&nbsp;<span class="str">skills/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># Tidybot skill catalog</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&boxvr;&boxh; tb-pick-up/scripts/main.py<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&boxvr;&boxh; tb-center/scripts/main.py<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&boxur;&boxh; tb-grasp/scripts/main.py<br>
-    &nbsp;&nbsp;<span class="str">docs/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># SDK guide, robot specs</span><br>
-    &nbsp;&nbsp;<span class="str">specs.md</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># "Compose a skill that clears the table"</span><br><br>
-    <span class="fn">step</span>(<span class="str">"cat specs.md"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">&rarr; task description</span><br>
-    <span class="fn">step</span>(<span class="str">"cat skills/tb-pick-up/..."</span>)&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">&rarr; discover primitive</span><br>
-    <span class="fn">step</span>(<span class="str">"cat &gt; tb-clear-table/..."</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">&rarr; compose new skill</span><br>
-    <span class="fn">step</span>(<span class="str">"done"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">&rarr; reward</span>
+<span class="cmt"># The agent has two tools. It decides everything else.</span>
+
+<span class="kw">1. STUDY</span>    <span class="fn">bash</span>(<span class="str">"cat brains/shared_brain/README.md"</span>)      <span class="cmt">&rarr; read framework docs</span>
+           <span class="fn">bash</span>(<span class="str">"cat skills/sc-pick/scripts/main.py"</span>)    <span class="cmt">&rarr; study existing skills</span>
+
+<span class="kw">2. WRITE</span>    <span class="fn">bash</span>(<span class="str">"cat > dev-sc-pull/scripts/main.py"</span>)     <span class="cmt">&rarr; write solve() function</span>
+
+<span class="kw">3. EXECUTE</span>  <span class="fn">sim_exec</span>(code)                                <span class="cmt">&rarr; run on GPU sim (ManiSkill3)</span>
+           <span class="cmt"># returns: state_before, state_after, reward, error, video</span>
+
+<span class="kw">4. DEBUG</span>    <span class="fn">bash</span>(<span class="str">"cat >> scratch.md"</span>)                      <span class="cmt">&rarr; reason about what went wrong</span>
+           <span class="cmt"># "cube moved +0.12 but goal is -0.15 &mdash; approaching from wrong side"</span>
+
+<span class="kw">5. SAVE</span>     skill &rarr; brains/private_brain/ &rarr; PR &rarr; brains/shared_brain/
+  </div>
+
+  <p style="color:var(--green); font-family:var(--font-mono); font-size:11px; margin-top:16px;">
+    Typical solve: 1&ndash;4 sim_exec attempts. The agent reads errors and state diffs to self-correct.
+  </p>
+</div>
+
+<!-- Multi-Agent Architecture -->
+<div class="panel fade-in">
+  <div class="panel-title">Four Agents, One Pipeline</div>
+
+  <div class="agent-grid">
+    <div class="agent-card solver">
+      <div class="agent-name">Solver Agent</div>
+      <div class="agent-model">Claude Sonnet</div>
+      <p>Solves tasks via ReAct loop. Reads skills, writes code, debugs via state diffs. Runs in parallel.</p>
+      <div class="agent-tools">
+        <span class="agent-tool">bash</span>
+        <span class="agent-tool">sim_exec</span>
+      </div>
+    </div>
+    <div class="agent-card pr">
+      <div class="agent-name">PR Agent</div>
+      <div class="agent-model">No LLM</div>
+      <p>Renders the solver's actual trajectory into a rich PR. Converts video to GIF. Pure git + gh.</p>
+      <div class="agent-tools">
+        <span class="agent-tool">git</span>
+        <span class="agent-tool">gh</span>
+        <span class="agent-tool">ffmpeg</span>
+      </div>
+    </div>
+    <div class="agent-card oversight">
+      <div class="agent-name">Oversight Agent</div>
+      <div class="agent-model">Claude Opus 4.6</div>
+      <p>Reviews code quality + watches the demo GIF. Checks for hardcoded values, framework usage, error handling.</p>
+      <div class="agent-tools">
+        <span class="agent-tool">gh pr diff</span>
+        <span class="agent-tool">gh pr review</span>
+        <span class="agent-tool">vision</span>
+      </div>
+    </div>
+    <div class="agent-card orchestrator">
+      <div class="agent-name">Orchestrator</div>
+      <div class="agent-model">No LLM</div>
+      <p>Launches all agents concurrently. Manages asyncio queues between solver, PR, and oversight.</p>
+      <div class="agent-tools">
+        <span class="agent-tool">asyncio</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data flow -->
+  <div class="flow-row" style="margin-top: 20px;">
+    <div class="flow-box active">Solver</div>
+    <div class="flow-queue">&rarr; pr_queue &rarr;</div>
+    <div class="flow-box cyan">PR Agent</div>
+    <div class="flow-queue">&rarr; review_queue &rarr;</div>
+    <div class="flow-box purple">Oversight</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box" style="border-color:var(--amber); color:var(--amber);">merge</div>
   </div>
 </div>
 
-<!-- ManiSkill3 + Framework -->
+<!-- Brain Architecture -->
 <div class="panel fade-in">
-  <div class="panel-title">ManiSkill3 (replacing MuJoCo) + Training Framework</div>
-  <p style="color:var(--text-dim); font-size:13px; margin-bottom:20px; line-height:1.6;">
-    Simon's feedback: MuJoCo is too slow. <strong style="color:var(--text-light)">ManiSkill3</strong> is GPU-native, 10-1000x faster.
-    ManiSkill-HAB already has TidyHouse, PrepareGroceries, SetTable &mdash; directly matching Tidybot use cases.
+  <div class="window-dots">
+    <div class="dot dot-red"></div>
+    <div class="dot dot-yellow"></div>
+    <div class="dot dot-green"></div>
+  </div>
+  <div class="panel-title">Two Brains &mdash; Private Workspace + Shared Library</div>
+
+  <div class="vs-layout">
+    <div class="vs-box left" style="border-top-color: var(--amber);">
+      <div class="vs-box-title" style="color: var(--amber);">Private Brain</div>
+      <ul class="vs-list">
+        <li>Per-agent workspace</li>
+        <li>Skills in development (dev-sc-*)</li>
+        <li>scratch.md &mdash; agent's thinking notebook</li>
+        <li>Visible to one solver only</li>
+      </ul>
+    </div>
+    <div class="vs-arrow" style="color:var(--green);">&rarr;<br><span style="font-size:10px; font-family:var(--font-mono); color:var(--text-dim);">PR</span></div>
+    <div class="vs-box right">
+      <div class="vs-box-title">Shared Brain</div>
+      <ul class="vs-list">
+        <li>Published, approved skills (sc-*)</li>
+        <li>Framework docs + API reference</li>
+        <li>Debug patterns from past failures</li>
+        <li>Available to all agents</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="color:var(--text-dim); font-size:13px; margin-top:20px; line-height:1.6;">
+    When a solver succeeds, its skill gets promoted: private brain &rarr; PR with trajectory + GIF &rarr; Opus reviews &rarr; merge to shared brain. The next agent can read it.
   </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 03: RESULTS                                                -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="section-header"><span>03</span> &mdash; Results</div>
+
+<!-- Skills Learned -->
+<div class="panel fade-in">
+  <div class="panel-title">8 Skills Learned Across 14 ManiSkill Benchmark Tasks</div>
+
+  <div class="skill-grid">
+    <div class="skill-card">
+      <div class="skill-name">sc-pick</div>
+      <div class="skill-task">PickCube, PickSingleYCB</div>
+      <div class="skill-desc">OBB-aligned grasp, approach, lift</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-push</div>
+      <div class="skill-task">PushCube</div>
+      <div class="skill-desc">Closed gripper as pushing surface</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-pull</div>
+      <div class="skill-task">PullCube</div>
+      <div class="skill-desc">Grasp and drag to goal position</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-stack-cube</div>
+      <div class="skill-task">StackCube</div>
+      <div class="skill-desc">Pick + offset alignment + place</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-lift-peg-upright</div>
+      <div class="skill-task">LiftPegUpright</div>
+      <div class="skill-desc">Side grasp + rotation to upright</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-insert</div>
+      <div class="skill-task">PegInsertionSide</div>
+      <div class="skill-desc">Pose algebra + iterative refinement</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-plug-charger</div>
+      <div class="skill-task">PlugCharger</div>
+      <div class="skill-desc">Charger alignment + insertion</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-name">sc-place-sphere</div>
+      <div class="skill-task">PlaceSphere</div>
+      <div class="skill-desc">Grasp + move to goal position</div>
+    </div>
+  </div>
+
+  <p style="color:var(--text-dim); font-size:13px; margin-top:20px; line-height:1.6;">
+    Each skill is a <code style="color:var(--text-light); background:#333; padding:1px 6px; border-radius:3px; font-size:12px;">def solve(env, planner)</code> function that works for any seed.
+    The hard tasks &mdash; peg insertion, charger plugging &mdash; require sub-millimeter alignment.
+  </p>
+</div>
+
+<!-- Flywheel Results -->
+<div class="panel fade-in">
+  <div class="window-dots">
+    <div class="dot dot-red"></div>
+    <div class="dot dot-yellow"></div>
+    <div class="dot dot-green"></div>
+  </div>
+  <div class="panel-title">The Flywheel &mdash; Skills Compound</div>
+
+  <table>
+    <thead><tr><th>Task</th><th>Difficulty</th><th>Skills Available</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td class="hl-cyan">PickCube</td><td>Easy</td><td>0 (cold start)</td><td class="hl">Solved</td></tr>
+      <tr><td class="hl-cyan">PushCube</td><td>Easy</td><td>1 (sc-pick)</td><td class="hl">Solved</td></tr>
+      <tr><td class="hl-cyan">StackCube</td><td>Medium</td><td>2 (sc-pick, sc-push)</td><td class="hl">Solved &mdash; reused sc-pick</td></tr>
+      <tr><td class="hl-cyan">PegInsertionSide</td><td>Hard</td><td>3</td><td class="hl">Solved &mdash; sub-mm precision</td></tr>
+    </tbody>
+  </table>
+
+  <p style="color:var(--green); font-family:var(--font-mono); font-size:11px; margin-top:16px;">
+    Flywheel mode: 4 tasks, 1/4 &rarr; 4/4 solved. Each success feeds the next.
+  </p>
+</div>
+
+<!-- Task Difficulty -->
+<div class="panel fade-in">
+  <div class="panel-title">14 ManiSkill Benchmark Tasks</div>
+
+  <table>
+    <thead><tr><th>Difficulty</th><th>Tasks</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="hl-cyan">Easy</td><td>PickCube, PushCube, PullCube</td><td class="hl">3/3 solved</td></tr>
+      <tr><td class="hl-amber">Medium</td><td>StackCube, LiftPegUpright, PlaceSphere, PokeCube, RollBall, PickSingleYCB, TurnFaucet</td><td class="hl">4/7 solved</td></tr>
+      <tr><td class="hl-red">Hard</td><td>PegInsertionSide, PlugCharger, StackPyramid, AssemblingKits</td><td class="hl">2/4 solved</td></tr>
+      <tr><td class="hl-purple">Kitchen</td><td>RoboCasaKitchen (mobile robot, 70+ fixtures)</td><td style="color:var(--text-dim);">in progress</td></tr>
+    </tbody>
+  </table>
+
+  <p style="color:var(--text-dim); font-size:13px; margin-top:16px; line-height:1.6;">
+    The kitchen uses a completely different robot (mobile base + Panda arm). Same agent loop, same two tools. No retraining.
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 04: THE SKILL FORMAT                                       -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="section-header"><span>04</span> &mdash; What a Skill Looks Like</div>
+
+<div class="panel fade-in">
+  <div class="window-dots">
+    <div class="dot dot-red"></div>
+    <div class="dot dot-yellow"></div>
+    <div class="dot dot-green"></div>
+  </div>
+  <div class="panel-title">sc-pull &mdash; learned from PullCube-v1</div>
 
   <div class="inline-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
     <div>
-      <table>
-        <thead><tr><th></th><th style="color:var(--green)">ManiSkill3</th><th>MuJoCo MJX</th></tr></thead>
-        <tbody>
-          <tr><td class="hl-cyan">Backend</td><td>NVIDIA PhysX (GPU)</td><td>JAX-based GPU</td></tr>
-          <tr><td class="hl-cyan">Parallel Rendering</td><td class="hl">Yes</td><td class="hl-red">No</td></tr>
-          <tr><td class="hl-cyan">Speed</td><td class="hl">10-1000x faster</td><td>Bottleneck</td></tr>
-          <tr><td class="hl-cyan">API</td><td>Gymnasium</td><td>Gymnasium</td></tr>
-        </tbody>
-      </table>
+      <p style="color:var(--amber); font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:1px; margin-bottom:10px;">SKILL.MD</p>
+      <div class="code-block" style="font-size:11px; line-height:1.6;">
+<span class="cmt">---</span>
+<span class="fn">name</span>: sc-pull
+<span class="fn">task</span>: PullCube-v1
+<span class="cmt">---</span>
+
+<span class="str"># Pull</span>
+Grasp an object and drag it
+toward a goal position.
+
+<span class="str">## Strategy</span>
+1. Open gripper
+2. Approach from near side
+3. Make contact
+4. Close gripper
+5. Pull to goal
+
+<span class="str">## Key Observations</span>
+<span class="cmt">- Pull vs Push: pull requires</span>
+<span class="cmt">  grasping first, then dragging</span>
+<span class="cmt">- Approach from side A, drag to B</span>
+<span class="cmt">- Maintain z-height during pull</span>
+      </div>
     </div>
     <div>
-      <div class="vs-layout" style="grid-template-columns:1fr auto 1fr; gap:12px;">
-        <div class="vs-box right" style="padding:16px 18px;">
-          <div class="vs-box-title" style="font-size:10px;">Primary</div>
-          <ul class="vs-list" style="font-size:12px;">
-            <li>ms-swift GRPO + QLoRA</li>
-            <li>Qwen3-Coder-Next (80B MoE)</li>
-            <li>2-4 &times; B200 on Modal</li>
-          </ul>
-        </div>
-        <div class="vs-arrow" style="font-size:16px;">or</div>
-        <div class="vs-box left" style="padding:16px 18px;">
-          <div class="vs-box-title" style="font-size:10px;">Backup</div>
-          <ul class="vs-list" style="font-size:12px;">
-            <li>Unsloth + TRL GRPOTrainer</li>
-            <li>Qwen3-Coder-30B-A3B</li>
-            <li>1 &times; A100-80GB on Modal</li>
-          </ul>
-        </div>
+      <p style="color:var(--amber); font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:1px; margin-bottom:10px;">SCRIPTS/MAIN.PY</p>
+      <div class="code-block" style="font-size:11px; line-height:1.6;">
+<span class="kw">def</span> <span class="fn">solve</span>(env, planner):
+  env = env.unwrapped
+  <span class="cmt"># Read state &mdash; no hardcoded positions</span>
+  cube = <span class="fn">get_actor_obb</span>(env, <span class="str">"cube"</span>)
+  goal = env.goal_pos
+
+  <span class="cmt"># 1. Open gripper</span>
+  planner.<span class="fn">open_gripper</span>()
+
+  <span class="cmt"># 2. Approach from near side</span>
+  approach = cube.center.copy()
+  approach[0] += <span class="str">0.04</span>  <span class="cmt"># offset</span>
+  planner.<span class="fn">move_to_pose_with_RRTConnect</span>(
+    approach, cube.rotation
+  )
+
+  <span class="cmt"># 3. Contact + grasp</span>
+  planner.<span class="fn">move_to_pose_with_screw</span>(...)
+  planner.<span class="fn">close_gripper</span>()
+
+  <span class="cmt"># 4. Pull to goal</span>
+  planner.<span class="fn">move_to_pose_with_RRTConnect</span>(
+    goal, cube.rotation
+  )
+  <span class="kw">return</span> env.<span class="fn">evaluate</span>()
       </div>
-      <p style="color:var(--text-dim); font-family:var(--font-mono); font-size:10px; margin-top:12px; text-align:center;">
-        Train on Modal &rarr; Infer on Nebius &nbsp;|&nbsp; Scripts forked from OpenEnv
-      </p>
     </div>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 04: ARCHITECTURE + DEMO + SPONSORS                         -->
+<!-- SECTION 05: BUILT WITH                                             -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="section-header"><span>04</span> &mdash; Architecture &times; Sponsors</div>
+<div class="section-header"><span>05</span> &mdash; Built With</div>
 
 <div class="panel fade-in">
-  <div class="window-dots">
-    <div class="dot dot-red"></div>
-    <div class="dot dot-yellow"></div>
-    <div class="dot dot-green"></div>
-  </div>
-  <div class="panel-title">System Architecture &mdash; every component maps to a sponsor</div>
+  <div class="panel-title">Infrastructure</div>
 
   <div class="sponsor-grid">
     <div class="sponsor-card primary">
       <div class="sponsor-name">Nebius</div>
-      <div class="sponsor-role">Token Factory &mdash; Inference + Fine-tune</div>
+      <div class="sponsor-role">GPU Cloud &mdash; ManiSkill3 simulation server</div>
     </div>
     <div class="sponsor-card" style="border-color:var(--cyan);">
-      <div class="sponsor-name" style="color:var(--cyan)">Tavily</div>
-      <div class="sponsor-role">AI Search (Nebius subsidiary)</div>
-    </div>
-    <div class="sponsor-card">
-      <div class="sponsor-name">LangChain</div>
-      <div class="sponsor-role">Agent Orchestration (LangGraph)</div>
-    </div>
-    <div class="sponsor-card">
-      <div class="sponsor-name">OpenRouter</div>
-      <div class="sponsor-role">Model Selection &mdash; Auto-routing</div>
-    </div>
-    <div class="sponsor-card">
-      <div class="sponsor-name">MiniMax</div>
-      <div class="sponsor-role">Voice Interface &mdash; Multimodal</div>
-    </div>
-    <div class="sponsor-card">
-      <div class="sponsor-name">Hugging Face</div>
-      <div class="sponsor-role">Deployment &mdash; Spaces</div>
+      <div class="sponsor-name" style="color:var(--cyan)">OpenRouter</div>
+      <div class="sponsor-role">LLM API &mdash; Claude Sonnet (solver) + Opus 4.6 (oversight)</div>
     </div>
   </div>
-</div>
 
-<!-- Demo Strategy -->
-<div class="panel fade-in">
-  <div class="panel-title">Demo Strategy</div>
-  <div class="inline-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-    <div>
-      <ul class="vs-list" style="line-height:2.2;">
-        <li>Pre-train model on robotics data before the event</li>
-        <li>Live inference on stage: decompose &rarr; recompose &rarr; generalize</li>
-        <li>No live training or real robot needed &mdash; sim validation</li>
-        <li>Highlight GPU-intensive training (Nebius) + scalable product</li>
-      </ul>
-    </div>
-    <div>
-      <table>
-        <thead><tr><th>Layer</th><th>Demo</th><th>Feasibility</th></tr></thead>
-        <tbody>
-          <tr class="highlight"><td>A. Inference</td><td>Pre-trained model</td><td class="hl">Feasible</td></tr>
-          <tr><td>B. Training</td><td>Live RL training</td><td class="hl-red">Hard</td></tr>
-          <tr><td>C. Both</td><td>Before/after + live</td><td class="hl-amber">Most impressive</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 05: RESOURCES + CHECKLIST                                  -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="section-header"><span>05</span> &mdash; Resources + Next Steps</div>
-
-<div class="panel fade-in">
-  <div class="panel-title">Datasets &amp; Repos</div>
-  <table>
-    <thead><tr><th>Resource</th><th>Content</th><th>Purpose</th></tr></thead>
+  <table style="margin-top: 20px;">
+    <thead><tr><th>Component</th><th>Technology</th><th>Role</th></tr></thead>
     <tbody>
-      <tr><td class="hl-cyan">Open X-Embodiment</td><td>527 labeled skills, 22 robots, 21 institutions</td><td>Primary data source</td></tr>
-      <tr><td class="hl-cyan">RLBench</td><td>100 simulated manipulation tasks</td><td>Diversity supplement</td></tr>
-      <tr><td class="hl-cyan">APEX-v1-extended</td><td>100 tasks + gold rubrics</td><td>RL reward (validated)</td></tr>
-      <tr><td class="hl-cyan">ManiSkill3</td><td>GPU-parallel sim (SAPIEN/PhysX)</td><td>Reward verifier</td></tr>
-      <tr><td class="hl-cyan">Tidybot Universe</td><td>Skill catalog + wishlist</td><td>Training building blocks</td></tr>
+      <tr><td class="hl-cyan">Simulation</td><td>ManiSkill3 (NVIDIA PhysX)</td><td>GPU-parallel robot simulation</td></tr>
+      <tr><td class="hl-cyan">Solver LLM</td><td>Claude Sonnet via OpenRouter</td><td>Code generation + self-debugging</td></tr>
+      <tr><td class="hl-cyan">Oversight LLM</td><td>Claude Opus 4.6 via OpenRouter</td><td>Code review + visual verification (vision)</td></tr>
+      <tr><td class="hl-cyan">PR Pipeline</td><td>git + gh CLI + ffmpeg</td><td>Skill promotion via GitHub PRs</td></tr>
+      <tr><td class="hl-cyan">Orchestration</td><td>Python asyncio</td><td>Concurrent agent coordination</td></tr>
+      <tr><td class="hl-cyan">Trajectory Format</td><td>ATIF v1.6 (JSON)</td><td>Compatible with Harbor RL framework</td></tr>
     </tbody>
   </table>
 </div>
 
-<div class="panel fade-in">
-  <div class="window-dots">
-    <div class="dot dot-red"></div>
-    <div class="dot dot-yellow"></div>
-    <div class="dot dot-green"></div>
-  </div>
-  <div class="panel-title">Checklist</div>
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 06: INSPIRATIONS                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="section-header"><span>06</span> &mdash; Inspired By</div>
 
-  <div class="check-grid">
-    <div class="check-col" style="border-top:3px solid var(--green);">
-      <div class="check-col-title" style="color:var(--green);">Environment</div>
-      <ul class="check-list">
-        <li>Download Tidybot tb- skills &rarr; workspace building blocks</li>
-        <li>Extract SDK guide + robot specs &rarr; docs/</li>
-        <li>Design 10-20 composition tasks</li>
-        <li>Write specs.md + rubric criteria</li>
-        <li>Integrate ManiSkill3 sim as reward verifier</li>
-      </ul>
-    </div>
-    <div class="check-col" style="border-top:3px solid var(--cyan);">
-      <div class="check-col-title" style="color:var(--cyan);">Execution</div>
-      <ul class="check-list">
-        <li>Fork &rarr; modal_skillclaw_grpo.py</li>
-        <li>Get Nebius compute credits</li>
-        <li>Align pitch narrative with Simon</li>
-        <li>Train composition model before event</li>
-        <li>Prepare inference demo</li>
-        <li>Integrate MiniMax voice interface</li>
-      </ul>
-    </div>
-  </div>
+<div class="panel fade-in">
+  <table>
+    <thead><tr><th>Project</th><th>What We Took</th></tr></thead>
+    <tbody>
+      <tr><td class="hl-cyan">TidyBot Universe</td><td>Skill format (SKILL.md + scripts/main.py), memory architecture</td></tr>
+      <tr><td class="hl-cyan">Harbor</td><td>bash-as-agent-interface, ATIF trajectory format for RL training</td></tr>
+      <tr><td class="hl-cyan">Voyager</td><td>LLM skill library concept (Minecraft &rarr; robotics)</td></tr>
+      <tr><td class="hl-cyan">Claude Code</td><td>Two-tool philosophy &mdash; bash + domain tool, agent decides the rest</td></tr>
+    </tbody>
+  </table>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -777,7 +860,7 @@ tr.highlight td { color: var(--green); }
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="footer">
   SkillClaw &middot; Nebius Build SF 2026 &middot;
-  Compositional Grammar Engine for Robotics
+  <a href="https://github.com/lilyzhng/SkillClaw">github.com/lilyzhng/SkillClaw</a>
 </div>
 
 </div>
