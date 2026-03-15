@@ -23,36 +23,35 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_OVERSIGHT_MODEL = "anthropic/claude-opus-4.6"
 PROJECT_ROOT = Path(__file__).parent.parent.parent  # rlvr/agents/ → SkillClaw/
 
-REVIEW_PROMPT = """You are a senior code reviewer for SkillClaw, a robot skill learning system that teaches robots manipulation tasks through code generation.
+REVIEW_PROMPT = """You are a code reviewer for SkillClaw, a robot skill learning system that teaches robots manipulation tasks through code generation.
 
 Your job: review a robot manipulation skill and decide if it's APPROVED or needs CHANGES.
 
 ## Review Criteria
 
-### Code Quality
-1. **No hardcoded positions/seeds** — The solve() function should work for ANY seed, not just the one it was tested on. Positions must come from state observation (get_actor_obb, initial_state), not literal coordinates. Small constant offsets (e.g. 0.02 for clearance) are acceptable if they're physics-based, not position-based.
+Be pragmatic. The bar for approval is: the agent genuinely solved the task (not copied from an existing skill) and the code runs successfully.
 
-2. **Uses framework helpers** — Should use get_actor_obb(), compute_grasp_info_by_obb(), planner.move_to_pose_with_screw(), etc. where appropriate. Raw coordinate manipulation is a red flag.
+### Must Pass (reject if violated)
+1. **Not cheating** — The solve() function must NOT be a copy-paste of an existing skill from the skill library. It should show original problem-solving (studying related skills for patterns is fine, but the solution must be adapted to the specific task).
+2. **Task completed** — The trajectory summary shows task success=True, or the demo GIF shows the robot completing the task.
 
-3. **Error handling** — Checks planner return values (res == -1 means failure). Raises RuntimeError on planning failures instead of silently returning.
-
-4. **Reusable pattern** — The approach should generalize. A skill that only works because of a specific object arrangement is not reusable.
-
-5. **SKILL.md accuracy** — The description and strategy in SKILL.md should match what the code actually does.
+### Nice to Have (note but don't reject)
+- Uses framework helpers (get_actor_obb, compute_grasp_info_by_obb, etc.)
+- Error handling on planner calls
+- SKILL.md matches the code
+- Motion quality in the GIF looks reasonable
 
 ### Visual Verification (if demo GIF provided)
-6. **Task completion** — Does the GIF show the robot actually completing the task? (e.g., for "pull cube", does the cube end up at the goal position?)
-7. **Motion quality** — Is the robot motion smooth and reasonable? Any collisions, drops, or erratic behavior?
+- Does the GIF show the robot actually completing the task?
+- Note any obvious issues (collisions, drops) but don't reject for minor imperfections.
 
 ## Response Format
 
 Start your response with either:
-- `APPROVED` — if the skill meets all criteria
-- `CHANGES NEEDED` — if there are issues
+- `APPROVED` — task was genuinely solved and completed
+- `CHANGES NEEDED` — only if cheating detected or task not actually completed
 
-Then explain your reasoning briefly. For CHANGES NEEDED, list the specific issues.
-
-Keep your review concise (under 400 words).
+Then explain your reasoning briefly. Keep your review concise (under 300 words).
 """
 
 
@@ -91,24 +90,38 @@ async def run_oversight_agent(
     logger.info("Oversight Agent finished.")
 
 
-def _load_gif_as_base64(skill) -> str | None:
-    """Try to load the demo GIF for visual review."""
-    if not skill.video_file:
+def _extract_gif_url_from_pr(pr_url: str) -> str | None:
+    """Extract the demo GIF URL from the PR body."""
+    if not pr_url:
         return None
-
-    gif_name = skill.video_file.replace(".mp4", ".gif")
-    gif_path = PROJECT_ROOT / "demos" / gif_name
-    if gif_path.exists():
-        data = gif_path.read_bytes()
-        return base64.standard_b64encode(data).decode("utf-8")
-
-    # Also check for mp4 directly (some models handle video)
-    mp4_path = PROJECT_ROOT / "demos" / skill.video_file
-    if mp4_path.exists():
-        data = mp4_path.read_bytes()
-        return base64.standard_b64encode(data).decode("utf-8")
-
+    result = subprocess.run(
+        f'gh pr view "{pr_url}" --json body --jq ".body"',
+        shell=True, capture_output=True, text=True,
+        cwd=str(PROJECT_ROOT), env=_oversight_bot_env(),
+    )
+    if result.returncode != 0:
+        return None
+    # Look for ![demo](https://raw.githubusercontent.com/...gif)
+    import re
+    match = re.search(r'!\[demo\]\((https://raw\.githubusercontent\.com/[^\)]+\.gif)\)', result.stdout)
+    if match:
+        return match.group(1)
     return None
+
+
+async def _load_gif_from_url(client: httpx.AsyncClient, gif_url: str) -> tuple[str, str] | tuple[None, None]:
+    """Download GIF from GitHub URL and return as base64."""
+    try:
+        response = await client.get(gif_url)
+        if response.status_code == 200:
+            data = base64.standard_b64encode(response.content).decode("utf-8")
+            logger.info(f"Oversight Agent: downloaded GIF from {gif_url} ({len(response.content)} bytes)")
+            return data, "image/gif"
+        else:
+            logger.warning(f"Oversight Agent: failed to download GIF: HTTP {response.status_code}")
+    except Exception as e:
+        logger.warning(f"Oversight Agent: GIF download error: {e}")
+    return None, None
 
 
 def _read_pr_files(pr_url: str) -> dict[str, str]:
@@ -121,7 +134,7 @@ def _read_pr_files(pr_url: str) -> dict[str, str]:
     result = subprocess.run(
         f'gh pr diff "{pr_url}"',
         shell=True, capture_output=True, text=True,
-        cwd=str(PROJECT_ROOT), env=_bot_env(),
+        cwd=str(PROJECT_ROOT), env=_oversight_bot_env(),
     )
     if result.returncode != 0:
         logger.warning(f"Failed to read PR diff: {result.stderr[:200]}")
@@ -131,7 +144,7 @@ def _read_pr_files(pr_url: str) -> dict[str, str]:
     files_result = subprocess.run(
         f'gh pr view "{pr_url}" --json files --jq ".files[].path"',
         shell=True, capture_output=True, text=True,
-        cwd=str(PROJECT_ROOT), env=_bot_env(),
+        cwd=str(PROJECT_ROOT), env=_oversight_bot_env(),
     )
     if files_result.returncode != 0:
         return files
@@ -141,7 +154,7 @@ def _read_pr_files(pr_url: str) -> dict[str, str]:
     branch_result = subprocess.run(
         f'gh pr view "{pr_url}" --json headRefName --jq ".headRefName"',
         shell=True, capture_output=True, text=True,
-        cwd=str(PROJECT_ROOT), env=_bot_env(),
+        cwd=str(PROJECT_ROOT), env=_oversight_bot_env(),
     )
     branch = branch_result.stdout.strip()
     if not branch:
@@ -232,14 +245,13 @@ async def _review_skill(
     # Build message parts
     user_content = []
 
-    # Add GIF for visual verification
-    gif_b64 = _load_gif_as_base64(skill)
+    # Add GIF for visual verification (fetch from GitHub PR URL)
+    gif_url = _extract_gif_url_from_pr(pr_url) if pr_url else None
+    if gif_url:
+        gif_b64, media_type = await _load_gif_from_url(client, gif_url)
+    else:
+        gif_b64, media_type = None, None
     if gif_b64:
-        gif_name = skill.video_file.replace(".mp4", ".gif")
-        media_type = "image/gif"
-        if not gif_name.endswith(".gif"):
-            media_type = "video/mp4"
-
         user_content.append({
             "type": "image",
             "source": {
@@ -249,7 +261,7 @@ async def _review_skill(
             },
         })
         text_content = "**Demo GIF is attached above.** Please verify the robot completes the task visually.\n\n" + text_content
-        logger.info(f"Oversight Agent: attached demo GIF for visual review")
+        logger.info(f"Oversight Agent: attached demo ({media_type}) for visual review")
 
     user_content.append({"type": "text", "text": text_content})
 
@@ -291,13 +303,12 @@ async def _review_skill(
             logger.info(f"Oversight Agent: commented on PR {pr_url}")
 
 
-def _bot_env() -> dict:
-    """Return env with bot token for gh commands, if available."""
+def _oversight_bot_env() -> dict:
+    """Return env with oversight bot token (skillclaw-bot1) for gh commands."""
     env = os.environ.copy()
-    bot_token = os.environ.get("SKILLCLAW_BOT_TOKEN")
+    bot_token = os.environ.get("SKILLCLAW_BOT_TOKEN_2")
     if bot_token:
         env["GH_TOKEN"] = bot_token
-        # Remove GITHUB_TOKEN to ensure GH_TOKEN takes priority
         env.pop("GITHUB_TOKEN", None)
     return env
 
@@ -315,7 +326,7 @@ def _gh_review(pr_url: str, approve: bool, body: str):
     result = subprocess.run(
         cmd, shell=True, capture_output=True, text=True,
         cwd=str(PROJECT_ROOT),
-        env=_bot_env(),
+        env=_oversight_bot_env(),
     )
     Path(review_file).unlink(missing_ok=True)
 
@@ -327,7 +338,7 @@ def _gh_review(pr_url: str, approve: bool, body: str):
             f'gh pr merge "{pr_url}" --squash --auto',
             shell=True, capture_output=True, text=True,
             cwd=str(PROJECT_ROOT),
-            env=_bot_env(),
+            env=_oversight_bot_env(),
         )
         if merge_result.returncode != 0:
             logger.warning(f"Auto-merge failed (may need manual merge): {merge_result.stderr[:200]}")
