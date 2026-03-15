@@ -297,6 +297,8 @@ def _bot_env() -> dict:
     bot_token = os.environ.get("SKILLCLAW_BOT_TOKEN")
     if bot_token:
         env["GH_TOKEN"] = bot_token
+        # Remove GITHUB_TOKEN to ensure GH_TOKEN takes priority
+        env.pop("GITHUB_TOKEN", None)
     return env
 
 
@@ -310,9 +312,22 @@ def _gh_review(pr_url: str, approve: bool, body: str):
     else:
         cmd = f'gh pr comment "{pr_url}" --body-file "{review_file}"'
 
-    subprocess.run(
+    result = subprocess.run(
         cmd, shell=True, capture_output=True, text=True,
         cwd=str(PROJECT_ROOT),
         env=_bot_env(),
     )
     Path(review_file).unlink(missing_ok=True)
+
+    if result.returncode != 0:
+        logger.error(f"gh review failed: {result.stderr[:200]}")
+    elif approve:
+        # Auto-merge after approval
+        merge_result = subprocess.run(
+            f'gh pr merge "{pr_url}" --squash --auto',
+            shell=True, capture_output=True, text=True,
+            cwd=str(PROJECT_ROOT),
+            env=_bot_env(),
+        )
+        if merge_result.returncode != 0:
+            logger.warning(f"Auto-merge failed (may need manual merge): {merge_result.stderr[:200]}")
