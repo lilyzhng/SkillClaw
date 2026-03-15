@@ -265,7 +265,7 @@ tr.highlight td { color: var(--green); }
 /* DEMO SHOWCASE                                 */
 /* ══════════════════════════════════════════════ */
 .demo-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
 }
 .demo-card {
   background: #181818; border-radius: 8px; overflow: hidden;
@@ -293,7 +293,7 @@ tr.highlight td { color: var(--green); }
 }
 .demo-link:hover { text-decoration: underline; }
 @media (max-width: 480px) {
-  .demo-grid { grid-template-columns: 1fr; }
+  .demo-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ══════════════════════════════════════════════ */
@@ -644,7 +644,7 @@ tr.highlight td { color: var(--green); }
 
   <div class="demo-grid">
     <div class="demo-card">
-      <img src="../demos/PullCube-v1_sess_26e6ab0f.gif" alt="PullCube skill demo — robot arm pulling a cube to a target position" loading="lazy">
+      <img src="assets/PullCube-v1_sess_26e6ab0f.gif" alt="PullCube skill demo — robot arm pulling a cube to a target position" loading="lazy">
       <div class="demo-info">
         <div class="demo-skill">sc-pull</div>
         <div class="demo-desc">Pull a cube onto a target. The agent learned to approach from the near side, grasp, and drag to the goal.</div>
@@ -652,11 +652,40 @@ tr.highlight td { color: var(--green); }
       </div>
     </div>
     <div class="demo-card">
-      <img src="../demos/LiftPegUpright-v1_sess_d7ad554d.gif" alt="LiftPegUpright skill demo — robot arm lifting a peg to upright position" loading="lazy">
+      <img src="assets/LiftPegUpright-v1_sess_d7ad554d.gif" alt="LiftPegUpright skill demo — robot arm lifting a peg to upright position" loading="lazy">
       <div class="demo-info">
         <div class="demo-skill">sc-lift-peg-upright</div>
         <div class="demo-desc">Move a peg laying on the table to any upright position. Side grasp + controlled rotation.</div>
         <a class="demo-link" href="https://github.com/lilyzhng/SkillClaw/pull/13" target="_blank" rel="noopener">View PR &rarr;</a>
+      </div>
+    </div>
+    <div class="demo-card">
+      <img src="assets/StackCube-v1_sess_4e8ac677.gif" alt="StackCube skill demo — robot arm stacking one cube on another" loading="lazy">
+      <div class="demo-info">
+        <div class="demo-skill">sc-stack-cube</div>
+        <div class="demo-desc">Pick up a cube and stack it on another. The agent composed sc-pick with offset alignment to solve this.</div>
+      </div>
+    </div>
+    <div class="demo-card">
+      <img src="assets/PickSingleYCB-v1_sess_394d6ea7.gif" alt="PickSingleYCB skill demo — robot arm picking a YCB object" loading="lazy">
+      <div class="demo-info">
+        <div class="demo-skill">sc-pick-ycb</div>
+        <div class="demo-desc">Pick up a real-world YCB object. Solved on first attempt by adapting the sc-pick pattern.</div>
+        <a class="demo-link" href="https://github.com/lilyzhng/SkillClaw/pull/14" target="_blank" rel="noopener">View PR &rarr;</a>
+      </div>
+    </div>
+    <div class="demo-card">
+      <img src="assets/PlaceSphere-v1_sess_7a22dafd.gif" alt="PlaceSphere skill demo — robot arm placing a sphere into a bin" loading="lazy">
+      <div class="demo-info">
+        <div class="demo-skill">sc-place-sphere</div>
+        <div class="demo-desc">Grasp a sphere and place it into a target bin. Learned gentle placement to prevent rolling.</div>
+      </div>
+    </div>
+    <div class="demo-card">
+      <img src="assets/RollBall-v1_sess_ff068158.gif" alt="RollBall demo — robot learning physics of ball momentum" loading="lazy">
+      <div class="demo-info">
+        <div class="demo-skill" style="color: var(--amber);">sc-roll-ball <span style="font-size:10px; color:var(--text-dim);">(partial)</span></div>
+        <div class="demo-desc">The agent discovered momentum physics: &ldquo;gripper pushes ball when positioning!&rdquo; Pushed ball 56cm in correct direction. Needs force calibration (RL) to complete.</div>
       </div>
     </div>
   </div>
