@@ -764,58 +764,8 @@ tr.highlight td { color: var(--green); }
     <div class="flow-arrow">&rarr;</div>
     <div class="flow-box" style="border-color:var(--amber); color:var(--amber);">merge</div>
   </div>
-</div>
 
-<!-- Brain Architecture -->
-<details class="section-collapse">
-<summary class="panel fade-in" style="cursor:pointer; list-style:none;">
-  <div class="window-dots">
-    <div class="dot dot-red"></div>
-    <div class="dot dot-yellow"></div>
-    <div class="dot dot-green"></div>
-  </div>
-  <div class="panel-title">Two Brains &mdash; Private Workspace + Shared Library <span style="font-size:12px; color:var(--text-dim);">&#9654;</span></div>
-</summary>
-<div class="panel" style="margin-top:-12px; border-top:none; border-top-left-radius:0; border-top-right-radius:0;">
-  <div class="vs-layout">
-    <div class="vs-box left" style="border-top-color: var(--amber);">
-      <div class="vs-box-title" style="color: var(--amber);">Private Brain</div>
-      <ul class="vs-list">
-        <li>Per-agent workspace</li>
-        <li>Skills in development (dev-sc-*)</li>
-        <li>scratch.md &mdash; agent's thinking notebook</li>
-        <li>Visible to one solver only</li>
-      </ul>
-    </div>
-    <div class="vs-arrow" style="color:var(--green);">&rarr;<br><span style="font-size:10px; font-family:var(--font-mono); color:var(--text-dim);">PR</span></div>
-    <div class="vs-box right">
-      <div class="vs-box-title">Shared Brain</div>
-      <ul class="vs-list">
-        <li>Published, approved skills (sc-*)</li>
-        <li>Framework docs + API reference</li>
-        <li>Debug patterns from past failures</li>
-        <li>Available to all agents</li>
-      </ul>
-    </div>
-  </div>
-
-  <p style="color:var(--text-dim); font-size:13px; margin-top:20px; line-height:1.6;">
-    When a solver succeeds, its skill gets promoted: private brain &rarr; PR with trajectory + GIF &rarr; Opus reviews &rarr; merge to shared brain. The next agent can read it.
-  </p>
-
-  <p style="color:var(--green); font-family:var(--font-mono); font-size:12px; margin-top:16px; font-style:italic;">
-    "Every task any agent solves makes every future agent better. The skill library is the flywheel."
-  </p>
-</div>
-</details>
-
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- SECTION 07: BUILT WITH                                             -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="section-header"><span>07</span> &mdash; Built With</div>
-
-<div class="panel fade-in">
-  <div class="panel-title">Infrastructure</div>
+  <div class="panel-title" style="margin-top:32px;">Infrastructure</div>
 
   <div class="sponsor-grid">
     <div class="sponsor-card primary">
