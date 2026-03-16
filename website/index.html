@@ -58,7 +58,7 @@ body { background: var(--bg); font-family: var(--font-sans); color: var(--text);
   position: relative; overflow: hidden;
 }
 .hero-split {
-  display: grid; grid-template-columns: 2fr 3fr; gap: 32px; align-items: center;
+  display: grid; grid-template-columns: 1fr 3fr; gap: 32px; align-items: center;
 }
 .hero-left { padding-right: 8px; }
 .hero-label {
@@ -128,10 +128,10 @@ body { background: var(--bg); font-family: var(--font-sans); color: var(--text);
 .tree-name { color: var(--text-light); }
 .tree-arrow { color: #555; }
 .tree-ref { color: var(--text-dim); }
-.tree-dim { color: #555; font-size: 10px; }
-.tree-check { color: var(--green); font-size: 11px; }
-.tree-fail { color: var(--red); font-size: 11px; }
-.tree-think { color: var(--amber); font-size: 11px; }
+.tree-dim { color: #555; font-size: 13px; }
+.tree-check { color: var(--green); font-size: 13px; }
+.tree-fail { color: var(--red); font-size: 13px; }
+.tree-think { color: var(--amber); font-size: 13px; }
 
 .hero-pipeline {
   display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap;
@@ -448,10 +448,10 @@ tr.highlight td { color: var(--green); }
           <div style="background:#111; border-radius:6px; padding:10px 12px; border:1px solid rgba(57,255,20,0.3);">
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
               <img src="assets/solver_agent.png" alt="" style="width:22px; height:22px; border-radius:50%; object-fit:cover;">
-              <span style="font-family:var(--font-mono); font-size:10px; color:var(--green); font-weight:700;">Sandbox 1</span>
+              <span style="font-family:var(--font-mono); font-size:13px; color:var(--green); font-weight:700;">Solver Agent 1</span>
             </div>
-            <div style="font-family:var(--font-mono); font-size:10px; color:var(--cyan); margin-bottom:6px;">PullCube-v1 &middot; seed 42</div>
-            <div class="hero-tree" style="font-size:10px;">
+            <div style="font-family:var(--font-mono); font-size:13px; color:var(--cyan); margin-bottom:6px;">PullCube-v1 &middot; seed 42</div>
+            <div class="hero-tree" style="font-size:13px;">
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">bash</span><span class="tree-dim"> study sc-pick</span><span class="tree-check">&check;</span></div>
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">sim_exec</span><span class="tree-dim"> attempt 1</span><span class="tree-fail">&cross;</span></div>
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">scratch</span><span class="tree-dim"> debug</span><span class="tree-think">&bull;</span></div>
@@ -463,10 +463,10 @@ tr.highlight td { color: var(--green); }
           <div style="background:#111; border-radius:6px; padding:10px 12px; border:1px solid rgba(57,255,20,0.3);">
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
               <img src="assets/solver_agent.png" alt="" style="width:22px; height:22px; border-radius:50%; object-fit:cover;">
-              <span style="font-family:var(--font-mono); font-size:10px; color:var(--green); font-weight:700;">Sandbox 2</span>
+              <span style="font-family:var(--font-mono); font-size:13px; color:var(--green); font-weight:700;">Solver Agent 2</span>
             </div>
-            <div style="font-family:var(--font-mono); font-size:10px; color:var(--cyan); margin-bottom:6px;">PullCube-v1 &middot; seed 17</div>
-            <div class="hero-tree" style="font-size:10px;">
+            <div style="font-family:var(--font-mono); font-size:13px; color:var(--cyan); margin-bottom:6px;">PullCube-v1 &middot; seed 17</div>
+            <div class="hero-tree" style="font-size:13px;">
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">bash</span><span class="tree-dim"> study sc-pick</span><span class="tree-check">&check;</span></div>
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">sim_exec</span><span class="tree-dim"> attempt 1</span><span class="tree-fail">&cross;</span></div>
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">sim_exec</span><span class="tree-dim"> attempt 2</span><span class="tree-fail">&cross;</span></div>
@@ -478,10 +478,10 @@ tr.highlight td { color: var(--green); }
           <div style="background:#111; border-radius:6px; padding:10px 12px; border:1px solid rgba(57,255,20,0.3);">
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
               <img src="assets/solver_agent.png" alt="" style="width:22px; height:22px; border-radius:50%; object-fit:cover;">
-              <span style="font-family:var(--font-mono); font-size:10px; color:var(--green); font-weight:700;">Sandbox 3</span>
+              <span style="font-family:var(--font-mono); font-size:13px; color:var(--green); font-weight:700;">Solver Agent 3</span>
             </div>
-            <div style="font-family:var(--font-mono); font-size:10px; color:var(--cyan); margin-bottom:6px;">PullCube-v1 &middot; seed 99</div>
-            <div class="hero-tree" style="font-size:10px;">
+            <div style="font-family:var(--font-mono); font-size:13px; color:var(--cyan); margin-bottom:6px;">PullCube-v1 &middot; seed 99</div>
+            <div class="hero-tree" style="font-size:13px;">
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">bash</span><span class="tree-dim"> study sc-push</span><span class="tree-check">&check;</span></div>
               <div class="tree-row"><span class="tree-branch">&boxvr;&boxh;</span><span class="tree-name">sim_exec</span><span class="tree-dim"> attempt 1</span><span class="tree-check">&check;</span></div>
               <div class="tree-row"><span class="tree-branch">&boxur;&boxh;</span><span class="tree-name">save</span><span class="tree-dim"> sc-pull</span><span class="tree-check">&check;</span></div>
@@ -508,33 +508,33 @@ tr.highlight td { color: var(--green); }
             <!-- Code Policy Agent -->
             <circle cx="100" cy="46" r="16" fill="#111" stroke="#00E5FF" stroke-width="1.5"/>
             <image href="assets/pr_agent.png" x="82" y="28" width="36" height="36" clip-path="circle(16px at 18px 18px)" style="clip-path:circle(16px at 18px 18px);"/>
-            <text x="100" y="74" fill="#00E5FF" font-family="Space Mono, monospace" font-size="8" text-anchor="middle">Code Policy Agent</text>
+            <text x="100" y="74" fill="#00E5FF" font-family="Space Mono, monospace" font-size="11" text-anchor="middle">Code Policy Agent</text>
             <!-- Arrow down -->
             <line x1="100" y1="82" x2="100" y2="98" stroke="#555" stroke-width="1.5" marker-end="url(#ahDim)"/>
             <!-- Oversight agent -->
             <circle cx="100" cy="116" r="16" fill="#111" stroke="#c084fc" stroke-width="1.5"/>
             <image href="assets/oversight_agent.png" x="82" y="98" width="36" height="36" style="clip-path:circle(16px at 18px 18px);"/>
-            <text x="100" y="144" fill="#c084fc" font-family="Space Mono, monospace" font-size="8" text-anchor="middle">Review</text>
+            <text x="100" y="144" fill="#c084fc" font-family="Space Mono, monospace" font-size="11" text-anchor="middle">Review</text>
 
             <!-- Lane 2: center column -->
             <line x1="300" y1="0" x2="300" y2="28" stroke="#555" stroke-width="1.5" marker-end="url(#ahDim)"/>
             <circle cx="300" cy="46" r="16" fill="#111" stroke="#00E5FF" stroke-width="1.5"/>
             <image href="assets/pr_agent.png" x="282" y="28" width="36" height="36" style="clip-path:circle(16px at 18px 18px);"/>
-            <text x="300" y="74" fill="#00E5FF" font-family="Space Mono, monospace" font-size="8" text-anchor="middle">Code Policy Agent</text>
+            <text x="300" y="74" fill="#00E5FF" font-family="Space Mono, monospace" font-size="11" text-anchor="middle">Code Policy Agent</text>
             <line x1="300" y1="82" x2="300" y2="98" stroke="#555" stroke-width="1.5" marker-end="url(#ahDim)"/>
             <circle cx="300" cy="116" r="16" fill="#111" stroke="#c084fc" stroke-width="1.5"/>
             <image href="assets/oversight_agent.png" x="282" y="98" width="36" height="36" style="clip-path:circle(16px at 18px 18px);"/>
-            <text x="300" y="144" fill="#c084fc" font-family="Space Mono, monospace" font-size="8" text-anchor="middle">Review</text>
+            <text x="300" y="144" fill="#c084fc" font-family="Space Mono, monospace" font-size="11" text-anchor="middle">Review</text>
 
             <!-- Lane 3: right column -->
             <line x1="500" y1="0" x2="500" y2="28" stroke="#555" stroke-width="1.5" marker-end="url(#ahDim)"/>
             <circle cx="500" cy="46" r="16" fill="#111" stroke="#00E5FF" stroke-width="1.5"/>
             <image href="assets/pr_agent.png" x="482" y="28" width="36" height="36" style="clip-path:circle(16px at 18px 18px);"/>
-            <text x="500" y="74" fill="#00E5FF" font-family="Space Mono, monospace" font-size="8" text-anchor="middle">Code Policy Agent</text>
+            <text x="500" y="74" fill="#00E5FF" font-family="Space Mono, monospace" font-size="11" text-anchor="middle">Code Policy Agent</text>
             <line x1="500" y1="82" x2="500" y2="98" stroke="#555" stroke-width="1.5" marker-end="url(#ahDim)"/>
             <circle cx="500" cy="116" r="16" fill="#111" stroke="#c084fc" stroke-width="1.5"/>
             <image href="assets/oversight_agent.png" x="482" y="98" width="36" height="36" style="clip-path:circle(16px at 18px 18px);"/>
-            <text x="500" y="144" fill="#c084fc" font-family="Space Mono, monospace" font-size="8" text-anchor="middle">Review</text>
+            <text x="500" y="144" fill="#c084fc" font-family="Space Mono, monospace" font-size="11" text-anchor="middle">Review</text>
 
             <!-- Converging arrows to Shared Brain -->
             <line x1="100" y1="148" x2="272" y2="188" stroke="#39FF14" stroke-width="1.5" stroke-opacity="0.6" marker-end="url(#ah)"/>
