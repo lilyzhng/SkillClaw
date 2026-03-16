@@ -197,6 +197,10 @@ SkillClaw/
 | Solver agent | `rlvr/agents/solver_agent.py` |
 | Available tasks | `TASK_DESCRIPTIONS` in `rlvr/agent_server.py` |
 
+## ManiSkill TidyVerse Integration
+
+The simulation environment and task definitions are powered by our ManiSkill TidyVerse fork: **[maniskill-tidyverse](https://github.com/shaoyifei96/maniskill-tidyverse)**
+
 ## Inspired By
 
 - **[TidyBot Universe](https://github.com/jimmyyhwu/tidybot-universe)** — skill format (SKILL.md + scripts/main.py), OpenClaw-style memory
